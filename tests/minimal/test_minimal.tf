@@ -11,36 +11,36 @@ terraform {
   }
 }
 
+resource "aci_rest" "fvTenant" {
+  dn         = "uni/tn-TF"
+  class_name = "fvTenant"
+}
+
+resource "aci_rest" "l3extOut" {
+  dn         = "uni/tn-${aci_rest.fvTenant.content.name}/out-L3OUT1"
+  class_name = "l3extOut"
+}
+
 module "main" {
   source = "../.."
 
-  name = "ABC"
+  tenant = aci_rest.fvTenant.content.name
+  l3out  = aci_rest.l3extOut.content.name
+  name   = "EXTEPG1"
 }
 
-data "aci_rest" "fvTenant" {
-  dn = "uni/tn-ABC"
+data "aci_rest" "l3extInstP" {
+  dn = module.main.dn
 
   depends_on = [module.main]
 }
 
-resource "test_assertions" "fvTenant" {
-  component = "fvTenant"
+resource "test_assertions" "l3extInstP" {
+  component = "l3extInstP"
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.fvTenant.content.name
-    want        = "ABC"
-  }
-
-  equal "nameAlias" {
-    description = "nameAlias"
-    got         = data.aci_rest.fvTenant.content.nameAlias
-    want        = ""
-  }
-
-  equal "descr" {
-    description = "descr"
-    got         = data.aci_rest.fvTenant.content.descr
-    want        = ""
+    got         = data.aci_rest.l3extInstP.content.name
+    want        = module.main.name
   }
 }
