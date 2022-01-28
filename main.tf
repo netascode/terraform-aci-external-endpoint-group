@@ -6,7 +6,7 @@ locals {
   }
 }
 
-resource "aci_rest" "l3extInstP" {
+resource "aci_rest_managed" "l3extInstP" {
   dn         = "uni/tn-${var.tenant}/out-${var.l3out}/instP-${var.name}"
   class_name = "l3extInstP"
   content = {
@@ -17,36 +17,36 @@ resource "aci_rest" "l3extInstP" {
   }
 }
 
-resource "aci_rest" "fvRsCons" {
+resource "aci_rest_managed" "fvRsCons" {
   for_each   = toset(var.contract_consumers)
-  dn         = "${aci_rest.l3extInstP.dn}/rscons-${each.value}"
+  dn         = "${aci_rest_managed.l3extInstP.dn}/rscons-${each.value}"
   class_name = "fvRsCons"
   content = {
     tnVzBrCPName = each.value
   }
 }
 
-resource "aci_rest" "fvRsProv" {
+resource "aci_rest_managed" "fvRsProv" {
   for_each   = toset(var.contract_providers)
-  dn         = "${aci_rest.l3extInstP.dn}/rsprov-${each.value}"
+  dn         = "${aci_rest_managed.l3extInstP.dn}/rsprov-${each.value}"
   class_name = "fvRsProv"
   content = {
     tnVzBrCPName = each.value
   }
 }
 
-resource "aci_rest" "fvRsConsIf" {
+resource "aci_rest_managed" "fvRsConsIf" {
   for_each   = toset(var.contract_imported_consumers)
-  dn         = "${aci_rest.l3extInstP.dn}/rsconsIf-${each.value}"
+  dn         = "${aci_rest_managed.l3extInstP.dn}/rsconsIf-${each.value}"
   class_name = "fvRsConsIf"
   content = {
     tnVzCPIfName = each.value
   }
 }
 
-resource "aci_rest" "l3extSubnet" {
+resource "aci_rest_managed" "l3extSubnet" {
   for_each   = { for subnet in var.subnets : subnet.prefix => subnet }
-  dn         = "${aci_rest.l3extInstP.dn}/extsubnet-[${each.value.prefix}]"
+  dn         = "${aci_rest_managed.l3extInstP.dn}/extsubnet-[${each.value.prefix}]"
   class_name = "l3extSubnet"
   content = {
     ip    = each.value.prefix
@@ -55,9 +55,9 @@ resource "aci_rest" "l3extSubnet" {
   }
 }
 
-resource "aci_rest" "l3extRsSubnetToRtSumm" {
+resource "aci_rest_managed" "l3extRsSubnetToRtSumm" {
   for_each   = { for subnet in var.subnets : subnet.prefix => subnet if subnet.bgp_route_summarization == true }
-  dn         = "${aci_rest.l3extSubnet[each.value.prefix].dn}/rsSubnetToRtSumm"
+  dn         = "${aci_rest_managed.l3extSubnet[each.value.prefix].dn}/rsSubnetToRtSumm"
   class_name = "l3extRsSubnetToRtSumm"
   content = {
     tDn = "uni/tn-common/bgprtsum-default"
