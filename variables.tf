@@ -59,14 +59,14 @@ variable "preferred_group" {
 variable "subnets" {
   description = "List of subnets. Default value `import_route_control`: false. Default value `export_route_control`: false. Default value `shared_route_control`: false. Default value `import_security`: true. Default value `shared_security`: false. Default value `bgp_route_summarization`: false."
   type = list(object({
-    name                    = optional(string)
+    name                    = optional(string, "")
     prefix                  = string
-    import_route_control    = optional(bool)
-    export_route_control    = optional(bool)
-    shared_route_control    = optional(bool)
-    import_security         = optional(bool)
-    shared_security         = optional(bool)
-    bgp_route_summarization = optional(bool)
+    import_route_control    = optional(bool, false)
+    export_route_control    = optional(bool, false)
+    shared_route_control    = optional(bool, false)
+    import_security         = optional(bool, true)
+    shared_security         = optional(bool, false)
+    bgp_route_summarization = optional(bool, false)
   }))
   default = []
 

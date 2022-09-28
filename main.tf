@@ -1,11 +1,3 @@
-locals {
-  contracts_dn = {
-    consumers          = [for con in var.contract_consumers == null ? [] : var.contract_consumers : "uni/tn-${var.tenant}/brc-${con}"]
-    providers          = [for con in var.contract_providers == null ? [] : var.contract_providers : "uni/tn-${var.tenant}/brc-${con}"]
-    imported_consumers = [for con in var.contract_imported_consumers == null ? [] : var.contract_imported_consumers : "uni/tn-${var.tenant}/cif-${con}"]
-  }
-}
-
 resource "aci_rest_managed" "l3extInstP" {
   dn         = "uni/tn-${var.tenant}/out-${var.l3out}/instP-${var.name}"
   class_name = "l3extInstP"
@@ -50,8 +42,8 @@ resource "aci_rest_managed" "l3extSubnet" {
   class_name = "l3extSubnet"
   content = {
     ip    = each.value.prefix
-    name  = each.value.name != null ? each.value.name : ""
-    scope = join(",", concat(each.value.export_route_control == true ? ["export-rtctrl"] : [], each.value.import_route_control == true ? ["import-rtctrl"] : [], each.value.import_security == false ? [] : ["import-security"], each.value.shared_route_control == true ? ["shared-rtctrl"] : [], each.value.shared_security == true ? ["shared-security"] : []))
+    name  = each.value.name
+    scope = join(",", concat(each.value.export_route_control == true ? ["export-rtctrl"] : [], each.value.import_route_control == true ? ["import-rtctrl"] : [], each.value.import_security == true ? ["import-security"] : [], each.value.shared_route_control == true ? ["shared-rtctrl"] : [], each.value.shared_security == true ? ["shared-security"] : []))
   }
 }
 

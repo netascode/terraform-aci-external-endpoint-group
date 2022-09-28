@@ -13,7 +13,7 @@ Location in GUI:
 ```hcl
 module "aci_external_endpoint_group" {
   source  = "netascode/external-endpoint-group/aci"
-  version = ">= 0.1.0"
+  version = ">= 0.2.0"
 
   tenant          = "ABC"
   l3out           = "L3OUT1"
@@ -41,7 +41,7 @@ module "aci_external_endpoint_group" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_aci"></a> [aci](#requirement\_aci) | >= 2.0.0 |
 
 ## Providers
@@ -60,7 +60,7 @@ module "aci_external_endpoint_group" {
 | <a name="input_alias"></a> [alias](#input\_alias) | Alias. | `string` | `""` | no |
 | <a name="input_description"></a> [description](#input\_description) | Description. | `string` | `""` | no |
 | <a name="input_preferred_group"></a> [preferred\_group](#input\_preferred\_group) | Preferred group membership. | `bool` | `false` | no |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets. Default value `import_route_control`: false. Default value `export_route_control`: false. Default value `shared_route_control`: false. Default value `import_security`: true. Default value `shared_security`: false. Default value `bgp_route_summarization`: false. | <pre>list(object({<br>    name                    = optional(string)<br>    prefix                  = string<br>    import_route_control    = optional(bool)<br>    export_route_control    = optional(bool)<br>    shared_route_control    = optional(bool)<br>    import_security         = optional(bool)<br>    shared_security         = optional(bool)<br>    bgp_route_summarization = optional(bool)<br>  }))</pre> | `[]` | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets. Default value `import_route_control`: false. Default value `export_route_control`: false. Default value `shared_route_control`: false. Default value `import_security`: true. Default value `shared_security`: false. Default value `bgp_route_summarization`: false. | <pre>list(object({<br>    name                    = optional(string, "")<br>    prefix                  = string<br>    import_route_control    = optional(bool, false)<br>    export_route_control    = optional(bool, false)<br>    shared_route_control    = optional(bool, false)<br>    import_security         = optional(bool, true)<br>    shared_security         = optional(bool, false)<br>    bgp_route_summarization = optional(bool, false)<br>  }))</pre> | `[]` | no |
 | <a name="input_contract_consumers"></a> [contract\_consumers](#input\_contract\_consumers) | List of contract consumers. | `list(string)` | `[]` | no |
 | <a name="input_contract_providers"></a> [contract\_providers](#input\_contract\_providers) | List of contract providers. | `list(string)` | `[]` | no |
 | <a name="input_contract_imported_consumers"></a> [contract\_imported\_consumers](#input\_contract\_imported\_consumers) | List of imported contract consumers. | `list(string)` | `[]` | no |
