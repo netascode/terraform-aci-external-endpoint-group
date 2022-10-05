@@ -56,17 +56,42 @@ variable "preferred_group" {
   default     = false
 }
 
+variable "qos_class" {
+  description = "QoS class. Choices: `level1`, `level2`, `level3`, `level4`, `level5`, `level6`, `unspecified`."
+  type        = string
+  default     = "unspecified"
+
+  validation {
+    condition     = contains(["level1", "level2", "level3", "level4", "level5", "level6", "unspecified"], var.qos_class)
+    error_message = "Allowed values are `level1`, `level2`, `level3`, `level4`, `level5`, `level6` or `unspecified`."
+  }
+}
+
+variable "target_dscp" {
+  description = "Target DSCP. Choices: `CS0`, `CS1`, `AF11`, `AF12`, `AF13`, `CS2`, `AF21`, `AF22`, `AF23`, `CS3`, `AF31`, `AF32`, `AF33`, `CS4`, `AF41`, `AF42`, `AF43`, `CS5`, `VA`, `EF`, `CS6`, `CS7`, `unspecified` or a number between `0` and `63`."
+  type        = string
+  default     = "unspecified"
+
+  validation {
+    condition     = contains(["CS0", "CS1", "AF11", "AF12", "AF13", "CS2", "AF21", "AF22", "AF23", "CS3", "AF31", "AF32", "AF33", "CS4", "AF41", "AF42", "AF43", "CS5", "VA", "EF", "CS6", "CS7", "unspecified"], var.target_dscp) || try(var.target_dscp >= 0 && var.target_dscp <= 63, false)
+    error_message = "Allowed values are `CS0`, `CS1`, `AF11`, `AF12`, `AF13`, `CS2`, `AF21`, `AF22`, `AF23`, `CS3`, `AF31`, `AF32`, `AF33`, `CS4`, `AF41`, `AF42`, `AF43`, `CS5`, `VA`, `EF`, `CS6`, `CS7`, `unspecified or a number between `0` and `63`."
+  }
+}
+
 variable "subnets" {
-  description = "List of subnets. Default value `import_route_control`: false. Default value `export_route_control`: false. Default value `shared_route_control`: false. Default value `import_security`: true. Default value `shared_security`: false. Default value `bgp_route_summarization`: false."
+  description = "List of subnets. Default value `import_route_control`: false. Default value `export_route_control`: false. Default value `shared_route_control`: false. Default value `import_security`: true. Default value `shared_security`: false. Default value `aggregate_import_route_control`: false. Default value `aggregate_export_route_control`: false. Default value `aggregate_shared_route_control`: false. Default value `bgp_route_summarization`: false."
   type = list(object({
-    name                    = optional(string, "")
-    prefix                  = string
-    import_route_control    = optional(bool, false)
-    export_route_control    = optional(bool, false)
-    shared_route_control    = optional(bool, false)
-    import_security         = optional(bool, true)
-    shared_security         = optional(bool, false)
-    bgp_route_summarization = optional(bool, false)
+    name                           = optional(string, "")
+    prefix                         = string
+    import_route_control           = optional(bool, false)
+    export_route_control           = optional(bool, false)
+    shared_route_control           = optional(bool, false)
+    import_security                = optional(bool, true)
+    shared_security                = optional(bool, false)
+    aggregate_import_route_control = optional(bool, false)
+    aggregate_export_route_control = optional(bool, false)
+    aggregate_shared_route_control = optional(bool, false)
+    bgp_route_summarization        = optional(bool, false)
   }))
   default = []
 

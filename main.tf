@@ -6,6 +6,8 @@ resource "aci_rest_managed" "l3extInstP" {
     nameAlias  = var.alias
     descr      = var.description
     prefGrMemb = var.preferred_group == true ? "include" : "exclude"
+    prio       = var.qos_class
+    targetDscp = var.target_dscp
   }
 }
 
@@ -41,9 +43,10 @@ resource "aci_rest_managed" "l3extSubnet" {
   dn         = "${aci_rest_managed.l3extInstP.dn}/extsubnet-[${each.value.prefix}]"
   class_name = "l3extSubnet"
   content = {
-    ip    = each.value.prefix
-    name  = each.value.name
-    scope = join(",", concat(each.value.export_route_control == true ? ["export-rtctrl"] : [], each.value.import_route_control == true ? ["import-rtctrl"] : [], each.value.import_security == true ? ["import-security"] : [], each.value.shared_route_control == true ? ["shared-rtctrl"] : [], each.value.shared_security == true ? ["shared-security"] : []))
+    ip        = each.value.prefix
+    name      = each.value.name
+    scope     = join(",", concat(each.value.export_route_control == true ? ["export-rtctrl"] : [], each.value.import_route_control == true ? ["import-rtctrl"] : [], each.value.import_security == true ? ["import-security"] : [], each.value.shared_route_control == true ? ["shared-rtctrl"] : [], each.value.shared_security == true ? ["shared-security"] : []))
+    aggregate = join(",", concat(each.value.aggregate_export_route_control == true ? ["export-rtctrl"] : [], each.value.aggregate_import_route_control == true ? ["import-rtctrl"] : [], each.value.aggregate_shared_route_control == true ? ["shared-rtctrl"] : []))
   }
 }
 

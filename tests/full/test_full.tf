@@ -32,15 +32,20 @@ module "main" {
   alias           = "EXTEPG1-ALIAS"
   description     = "My Description"
   preferred_group = true
+  qos_class       = "level2"
+  target_dscp     = "CS2"
   subnets = [{
-    name                    = "SUBNET1"
-    prefix                  = "10.0.0.0/8"
-    import_route_control    = true
-    export_route_control    = true
-    shared_route_control    = true
-    import_security         = true
-    shared_security         = true
-    bgp_route_summarization = true
+    name                           = "SUBNET1"
+    prefix                         = "10.0.0.0/8"
+    import_route_control           = true
+    export_route_control           = true
+    shared_route_control           = true
+    import_security                = true
+    shared_security                = true
+    aggregate_import_route_control = true
+    aggregate_export_route_control = true
+    aggregate_shared_route_control = true
+    bgp_route_summarization        = true
   }]
   contract_consumers          = ["CON1"]
   contract_providers          = ["CON1"]
@@ -78,6 +83,18 @@ resource "test_assertions" "l3extInstP" {
     description = "prefGrMemb"
     got         = data.aci_rest_managed.l3extInstP.content.prefGrMemb
     want        = "include"
+  }
+
+  equal "prio" {
+    description = "prio"
+    got         = data.aci_rest_managed.l3extInstP.content.prio
+    want        = "level2"
+  }
+
+  equal "targetDscp" {
+    description = "targetDscp"
+    got         = data.aci_rest_managed.l3extInstP.content.targetDscp
+    want        = "CS2"
   }
 }
 
@@ -154,6 +171,12 @@ resource "test_assertions" "l3extSubnet" {
     description = "scope"
     got         = data.aci_rest_managed.l3extSubnet.content.scope
     want        = "export-rtctrl,import-rtctrl,import-security,shared-rtctrl,shared-security"
+  }
+
+  equal "aggregate" {
+    description = "aggregate"
+    got         = data.aci_rest_managed.l3extSubnet.content.aggregate
+    want        = "export-rtctrl,import-rtctrl,shared-rtctrl"
   }
 }
 
