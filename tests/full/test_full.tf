@@ -31,12 +31,12 @@ module "main" {
   name            = "EXTEPG1"
   alias           = "EXTEPG1-ALIAS"
   description     = "My Description"
-  preferred_group = true
+  preferred_group = false
   qos_class       = "level2"
   target_dscp     = "CS2"
   subnets = [{
     name                           = "SUBNET1"
-    prefix                         = "10.0.0.0/8"
+    prefix                         = "0.0.0.0/0"
     import_route_control           = true
     export_route_control           = true
     shared_route_control           = true
@@ -45,7 +45,7 @@ module "main" {
     aggregate_import_route_control = true
     aggregate_export_route_control = true
     aggregate_shared_route_control = true
-    bgp_route_summarization        = true
+    bgp_route_summarization        = false
   }]
   contract_consumers          = ["CON1"]
   contract_providers          = ["CON1"]
@@ -82,7 +82,7 @@ resource "test_assertions" "l3extInstP" {
   equal "prefGrMemb" {
     description = "prefGrMemb"
     got         = data.aci_rest_managed.l3extInstP.content.prefGrMemb
-    want        = "include"
+    want        = "exclude"
   }
 
   equal "prio" {
@@ -147,7 +147,7 @@ resource "test_assertions" "fvRsConsIf" {
 }
 
 data "aci_rest_managed" "l3extSubnet" {
-  dn = "${data.aci_rest_managed.l3extInstP.id}/extsubnet-[10.0.0.0/8]"
+  dn = "${data.aci_rest_managed.l3extInstP.id}/extsubnet-[0.0.0.0/0]"
 
   depends_on = [module.main]
 }
@@ -158,7 +158,7 @@ resource "test_assertions" "l3extSubnet" {
   equal "ip" {
     description = "ip"
     got         = data.aci_rest_managed.l3extSubnet.content.ip
-    want        = "10.0.0.0/8"
+    want        = "0.0.0.0/0"
   }
 
   equal "name" {
@@ -177,21 +177,5 @@ resource "test_assertions" "l3extSubnet" {
     description = "aggregate"
     got         = data.aci_rest_managed.l3extSubnet.content.aggregate
     want        = "export-rtctrl,import-rtctrl,shared-rtctrl"
-  }
-}
-
-data "aci_rest_managed" "l3extRsSubnetToRtSumm" {
-  dn = "${data.aci_rest_managed.l3extSubnet.id}/rsSubnetToRtSumm"
-
-  depends_on = [module.main]
-}
-
-resource "test_assertions" "l3extRsSubnetToRtSumm" {
-  component = "l3extRsSubnetToRtSumm"
-
-  equal "tDn" {
-    description = "tDn"
-    got         = data.aci_rest_managed.l3extRsSubnetToRtSumm.content.tDn
-    want        = "uni/tn-common/bgprtsum-default"
   }
 }

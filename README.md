@@ -72,7 +72,6 @@ module "aci_external_endpoint_group" {
 | <a name="input_contract_providers"></a> [contract\_providers](#input\_contract\_providers) | List of contract providers. | `list(string)` | `[]` | no |
 | <a name="input_contract_imported_consumers"></a> [contract\_imported\_consumers](#input\_contract\_imported\_consumers) | List of imported contract consumers. | `list(string)` | `[]` | no |
 | <a name="input_sr_mpls_infra_l3out"></a> [sr\_mpls\_infra\_l3out](#input\_sr\_mpls\_infra\_l3out) | SR MPLS Infra L3Out name. | `string` | `""` | no |
-| <a name="input_sr_mpls"></a> [sr\_mpls](#input\_sr\_mpls) | SR MPLS L3out flag | `bool` | `false` | no |
 
 ## Outputs
 

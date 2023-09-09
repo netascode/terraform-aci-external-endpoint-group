@@ -60,7 +60,7 @@ resource "aci_rest_managed" "l3extRsSubnetToRtSumm" {
 }
 
 resource "aci_rest_managed" "l3extRsLblToInstP" {
-  count      = var.sr_mpls == true ? 1 : 0
+  count      = var.sr_mpls_infra_l3out != "" ? 1 : 0
   dn         = "uni/tn-${var.tenant}/out-${var.l3out}/conslbl-${var.sr_mpls_infra_l3out}/rslblToInstP-[uni/tn-${var.tenant}/out-${var.l3out}/instP-${var.name}]"
   class_name = "l3extRsLblToInstP"
   content = {
